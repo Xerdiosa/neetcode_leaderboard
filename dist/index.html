@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en" data-authenticated="false">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Track public NeetCode profile progress and activity." />
+    <title>NeetCode Profile Stats</title>
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <section id="auth-overlay" class="auth-overlay" aria-labelledby="auth-title">
+      <form id="auth-form" class="auth-card">
+        <p class="eyebrow">PRIVATE DASHBOARD</p>
+        <h2 id="auth-title">Enter password</h2>
+        <p>Use the dashboard password to view the configured profiles.</p>
+        <label class="sr-only" for="password-input">Password</label>
+        <input id="password-input" name="password" type="password" autocomplete="current-password" placeholder="Password" required />
+        <button type="submit">Continue <span aria-hidden="true">↗</span></button>
+        <p id="auth-message" class="auth-message" role="alert"></p>
+      </form>
+    </section>
+    <main class="page-shell">
+      <section class="dashboard-heading" aria-label="Dashboard controls">
+        <div><p class="eyebrow">LIVE SNAPSHOT</p><h2>Profile comparison</h2></div>
+        <div class="dashboard-actions">
+          <button id="theme-toggle" class="theme-toggle" type="button" aria-label="Switch to dark mode">Dark mode <span aria-hidden="true">◐</span></button>
+          <button id="refresh-button" class="text-button" type="button">Refresh all <span aria-hidden="true">↻</span></button>
+        </div>
+      </section>
+      <section id="profiles" class="profiles" aria-live="polite"></section>
+      <template id="profile-template">
+        <article class="profile-card">
+          <header class="profile-header">
+            <div class="identity"><div class="avatar" aria-hidden="true"></div><div><div class="handle-row"><h3 class="handle"></h3></div><p class="joined"></p></div></div>
+          </header>
+          <div class="headline-stats">
+            <div><span class="problems-solved-label">Problems solved</span><strong class="problems-solved"></strong></div>
+            <div><span>Global percentile</span><strong class="percentile"></strong></div>
+            <div><span class="current-streak-label">Current streak</span><strong class="current-streak"></strong></div>
+            <div><span>Best streak</span><strong class="max-streak"></strong></div>
+          </div>
+          <section class="difficulty-section" aria-label="Difficulty progress"><div class="section-label"><h4>Difficulty progress</h4><span class="difficulty-total"></span></div><div class="difficulty-list"></div></section>
+          <section class="activity-section" aria-label="Recent activity"><div class="section-label"><h4>Recent activity</h4><span class="activity-summary"></span></div><div class="activity-chart" role="img" aria-label="Recent daily activity chart"></div><div class="activity-axis"><span>Recent</span><span>Today</span></div></section>
+        </article>
+      </template>
+    </main>
+    <script src="./dashboard.js"></script>
+  </body>
+</html>

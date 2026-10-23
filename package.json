@@ -1,0 +1,9 @@
+{
+  "name": "neetcode-leaderboard",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch server.js",
+    "start": "bun server.js"
+  }
+}
