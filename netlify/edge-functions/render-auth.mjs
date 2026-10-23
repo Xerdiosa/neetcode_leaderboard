@@ -4,7 +4,7 @@ export default async (request, context) => {
   const response = await context.next();
   if (!response.headers.get('content-type')?.includes('text/html')) return response;
 
-  const authenticated = isAuthenticated(request, Netlify.env.get('secret'));
+  const authenticated = await isAuthenticated(request, Netlify.env.get('secret'));
   let document = await response.text();
   document = document.replace('data-authenticated="false"', `data-authenticated="${authenticated}"`);
   if (authenticated) document = document.replace('<section id="auth-overlay"', '<section id="auth-overlay" hidden');

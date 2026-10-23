@@ -1,17 +1,37 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
-
 export const authCookieName = 'neetcode_dashboard_auth';
+const textEncoder = new TextEncoder();
 
-function sessionToken(secret) {
-  return createHmac('sha256', secret)
-    .update('neetcode-dashboard-session')
-    .digest('base64url');
+function base64Url(bytes) {
+  let value = '';
+  bytes.forEach((byte) => {
+    value += String.fromCharCode(byte);
+  });
+  return btoa(value).replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '');
 }
 
 function equalValues(first, second) {
-  const firstValue = Buffer.from(first || '');
-  const secondValue = Buffer.from(second || '');
-  return firstValue.length === secondValue.length && timingSafeEqual(firstValue, secondValue);
+  const firstValue = textEncoder.encode(first || '');
+  const secondValue = textEncoder.encode(second || '');
+  let difference = firstValue.length ^ secondValue.length;
+  const length = Math.max(firstValue.length, secondValue.length);
+
+  for (let index = 0; index < length; index += 1) {
+    difference |= (firstValue[index] || 0) ^ (secondValue[index] || 0);
+  }
+
+  return difference === 0;
+}
+
+async function sessionToken(secret) {
+  const key = await crypto.subtle.importKey(
+    'raw',
+    textEncoder.encode(secret),
+    { name: 'HMAC', hash: 'SHA-256' },
+    false,
+    ['sign'],
+  );
+  const signature = await crypto.subtle.sign('HMAC', key, textEncoder.encode('neetcode-dashboard-session'));
+  return base64Url(new Uint8Array(signature));
 }
 
 function cookieValue(request, name) {
@@ -20,8 +40,8 @@ function cookieValue(request, name) {
   return entry?.trim().slice(name.length + 1) || '';
 }
 
-export function isAuthenticated(request, secret) {
-  return Boolean(secret) && equalValues(cookieValue(request, authCookieName), sessionToken(secret));
+export async function isAuthenticated(request, secret) {
+  return Boolean(secret) && equalValues(cookieValue(request, authCookieName), await sessionToken(secret));
 }
 
 export function unauthenticatedResponse(message = 'Unauthenticated. Enter the password to continue.') {
@@ -40,7 +60,7 @@ export async function authenticationResponse(request, secret) {
       {
         headers: {
           'Cache-Control': 'no-store',
-          'Set-Cookie': `${authCookieName}=${sessionToken(secret)}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=604800`,
+          'Set-Cookie': `${authCookieName}=${await sessionToken(secret)}; HttpOnly; Secure; SameSite=Lax; Path=/; Max-Age=604800`,
         },
       },
     );

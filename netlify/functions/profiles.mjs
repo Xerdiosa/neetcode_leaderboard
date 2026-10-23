@@ -27,7 +27,7 @@ async function getProfile(user) {
 
 export default async (request) => {
   if (request.method !== 'GET') return new Response('Method not allowed', { status: 405 });
-  if (!isAuthenticated(request, process.env.secret)) return unauthenticatedResponse();
+  if (!await isAuthenticated(request, process.env.secret)) return unauthenticatedResponse();
 
   const users = configuredUsers(process.env.users);
   if (!users.length) {
