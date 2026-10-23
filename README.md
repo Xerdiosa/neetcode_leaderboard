@@ -1,3 +1,5 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/d0d1a2b3-11ae-4ded-ba05-6b8d6cf55493/deploy-status)](https://app.netlify.com/projects/akbar-neetcode-leaderboard/deploys)
+
 # NeetCode Leaderboard
 
 This Bun server reads profile mappings from `.env`, fetches their public NeetCode stats server-side, and serves the dashboard.
