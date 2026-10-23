@@ -4,11 +4,11 @@ This Bun server reads profile mappings from `.env`, fetches their public NeetCod
 
 ## Configuration
 
-Use a dashboard password plus comma-separated `handle:real name` entries:
+Use a dashboard password plus comma-separated `handle:real name:avatar URL` entries. The avatar URL is optional; wrap it in double quotes when it contains commas:
 
 ```env
 secret=choose-a-strong-password
-users=NeetCodeHandle:Name,AnotherHandle:Another Name
+users=NeetCodeHandle:Name:"https://cdn.example.com/name.webp",AnotherHandle:Another Name
 ```
 
 The authentication cookie is marked `Secure` for every non-local host. If a trusted reverse proxy terminates TLS and forwards requests to this server on localhost, set `TRUST_PROXY=true` so its `X-Forwarded-Proto` value is honored.

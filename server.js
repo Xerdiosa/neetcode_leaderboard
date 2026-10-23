@@ -9,12 +9,34 @@ const staticFiles = new Map([
   ['/favicon.ico', ['dist/favicon.ico', 'image/x-icon']],
 ]);
 
-function configuredUsers() {
-  return (Bun.env.users || '')
-    .split(',')
+async function configuredUsers() {
+  let userValue = Bun.env.users || '';
+  try {
+    const envFile = await Bun.file('.env').text();
+    const configuredValue = envFile.match(/^users=(.*)$/m)?.[1];
+    if (configuredValue) userValue = configuredValue;
+  } catch {}
+
+  const entries = [];
+  userValue.split(',').forEach((part) => {
+    if (/^[^,:]+:[^,:]+(?::|$)/.test(part.trim())) entries.push(part);
+    else if (entries.length) entries[entries.length - 1] += `,${part}`;
+  });
+
+  return entries
     .map((entry) => {
-      const [handle, ...nameParts] = entry.split(':');
-      return { handle: handle?.trim(), name: nameParts.join(':').trim() };
+      const firstSeparator = entry.indexOf(':');
+      const secondSeparator = entry.indexOf(':', firstSeparator + 1);
+      const handle = entry.slice(0, firstSeparator).trim();
+      const name = entry.slice(firstSeparator + 1, secondSeparator === -1 ? undefined : secondSeparator).trim();
+      const rawAvatarUrl = secondSeparator === -1 ? '' : entry.slice(secondSeparator + 1).trim().replace(/^"(.*)"$/, '$1');
+
+      try {
+        const avatarUrl = new URL(rawAvatarUrl);
+        return { handle, name, avatarUrl: ['http:', 'https:'].includes(avatarUrl.protocol) ? avatarUrl.href : undefined };
+      } catch {
+        return { handle, name };
+      }
     })
     .filter(({ handle, name }) => handle && name);
 }
@@ -99,11 +121,11 @@ async function getProfile(user) {
   const payload = await response.json();
   if (!payload.data?.anonUsername) throw new Error('Profile was not found');
 
-  return { name: user.name, profile: payload.data };
+  return { name: user.name, avatarUrl: user.avatarUrl, profile: payload.data };
 }
 
 async function profileResponse() {
-  const users = configuredUsers();
+  const users = await configuredUsers();
   if (!users.length) {
     return Response.json(
       { error: 'No users are configured. Set users=handle:Name,handle:Name in .env.' },

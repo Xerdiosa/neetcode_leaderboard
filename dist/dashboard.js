@@ -145,7 +145,7 @@ function render() {
     hard: winnerKeys(profileEntries, (profile) => profile.ncAllDifficultyStats?.hard?.completed),
   };
 
-  profileEntries.forEach(({ name, profile }) => {
+  profileEntries.forEach(({ name, avatarUrl, profile }) => {
     const content = profileTemplate.content.cloneNode(true);
     const card = content.querySelector('.profile-card');
     const ranking = profile.ranking || {};
@@ -162,6 +162,14 @@ function render() {
 
     card.querySelector('.handle').textContent = name;
     card.querySelector('.joined').textContent = `@${profile.anonUsername}${profile.joinedYear ? ` · Joined ${profile.joinedYear}` : ''}`;
+    if (avatarUrl) {
+      const avatar = card.querySelector('.avatar');
+      const image = document.createElement('img');
+      image.src = avatarUrl;
+      image.alt = '';
+      avatar.classList.add('has-avatar');
+      avatar.append(image);
+    }
     const key = profileKey(profile);
     setProblemsSolvedLabel(card.querySelector('.problems-solved-label'), winners.problemsSolved.has(key));
     setMetricValue(card.querySelector('.problems-solved'), formatNumber(solvedCount), false);
