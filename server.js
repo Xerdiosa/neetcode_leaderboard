@@ -6,7 +6,7 @@ const authCookieName = 'neetcode_dashboard_auth';
 const staticFiles = new Map([
   ['/dashboard.js', ['dist/dashboard.js', 'application/javascript; charset=utf-8']],
   ['/styles.css', ['dist/styles.css', 'text/css; charset=utf-8']],
-  ['/favicon.ico', ['favicon.ico', 'image/x-icon']],
+  ['/favicon.ico', ['dist/favicon.ico', 'image/x-icon']],
 ]);
 
 function configuredUsers() {
