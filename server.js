@@ -29,7 +29,7 @@ async function configuredUsers() {
       const secondSeparator = entry.indexOf(':', firstSeparator + 1);
       const handle = entry.slice(0, firstSeparator).trim();
       const name = entry.slice(firstSeparator + 1, secondSeparator === -1 ? undefined : secondSeparator).trim();
-      const rawAvatarUrl = secondSeparator === -1 ? '' : entry.slice(secondSeparator + 1).trim().replace(/^"(.*)"$/, '$1');
+      const rawAvatarUrl = entry.match(/https?:\/\/[^\s"']+/)?.[0] || '';
 
       try {
         const avatarUrl = new URL(rawAvatarUrl);
