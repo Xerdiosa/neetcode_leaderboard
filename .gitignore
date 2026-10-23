@@ -3,3 +3,6 @@ curl.sample
 .openai
 .agents
 .codex
+.netlify
+node_modules
+.DS_Store
