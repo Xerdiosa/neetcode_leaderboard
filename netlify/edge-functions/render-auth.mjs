@@ -14,6 +14,7 @@ export default async (request, context) => {
   headers.delete('content-length');
   headers.delete('etag');
   headers.set('Cache-Control', 'private, no-store');
+  headers.set('Content-Security-Policy', "default-src 'self'; connect-src 'self'; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; base-uri 'self'; form-action 'self'; frame-ancestors 'none'");
   return new Response(document, { status: response.status, statusText: response.statusText, headers });
 };
 
