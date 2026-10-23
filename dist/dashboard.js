@@ -84,7 +84,7 @@ function difficultyRow(name, stats, color, isWinner) {
   const total = Number(stats?.total) || 0;
   const percentage = total ? Math.min((completed / total) * 100, 100) : 0;
 
-  return `<div class="difficulty-row"><span class="difficulty-name">${name}</span><div class="progress-track"><div class="progress-value" style="width:${percentage}%;background:${color}"></div></div><span class="difficulty-count">${completed}/${total}${crownMarkup(isWinner)}</span></div>`;
+  return `<div class="difficulty-row"><span class="difficulty-name">${name}</span><div class="progress-track"><div class="progress-value" style="width:${percentage}%;background:${color}"></div></div><span class="difficulty-count"><span class="difficulty-value">${completed}/${total}${crownMarkup(isWinner)}</span></span></div>`;
 }
 
 function setMetricValue(element, value, isWinner) {
